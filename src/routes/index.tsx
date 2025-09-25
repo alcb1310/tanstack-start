@@ -34,6 +34,7 @@ function Home() {
         <div>
             <button
                 type="button"
+                className="bg-blue500 text-blue-50"
                 onClick={() => {
                     updateCount({ data: 1 }).then(() => {
                         router.invalidate();

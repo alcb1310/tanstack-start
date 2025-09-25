@@ -15,11 +15,13 @@
 	"packageManager": "pnpm@10.17.1",
 	"dependencies": {
 		"@netlify/vite-plugin-tanstack-start": "^1.0.1",
+		"@tailwindcss/vite": "^4.1.13",
 		"@tanstack/react-router": "^1.132.7",
 		"@tanstack/react-start": "^1.132.7",
 		"@vitejs/plugin-react": "^5.0.3",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
+		"tailwindcss": "^4.1.13",
 		"vite": "^7.1.7"
 	},
 	"devDependencies": {
