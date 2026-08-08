@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { clientEnv } from '@/config/env'
 
 export const Route = createFileRoute('/about')({
 	component: RouteComponent,
@@ -14,9 +15,11 @@ function RouteComponent() {
 				<li>
 					<Link to='/about'>About</Link>
 				</li>
-				<li>
-					<Link to='/contact'>Contact</Link>
-				</li>
+				{clientEnv.VITE_CONTACT_FLAG === 'true' && (
+					<li>
+						<Link to='/contact'>Contact</Link>
+					</li>
+				)}
 			</ul>
 			Hello "/about"!
 		</div>
