@@ -1,9 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute('/')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/")({
+	component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/"!</div>
+	return (
+		<div>
+			<p>Hello "/"!</p>
+			<Button variant="default">Shadcn/UI button</Button>
+		</div>
+	);
 }
