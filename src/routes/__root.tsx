@@ -20,7 +20,7 @@ function ShellComponent({ children }: Readonly<{ children: ReactNode }>) {
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="bg-green-200">
 				{children}
 				<Scripts />
 			</body>
