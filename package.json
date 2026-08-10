@@ -1,33 +1,35 @@
 {
-  "name": "tanstack-start",
-  "version": "1.0.0",
-  "description": "[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alcb1310/tanstack-start.git"
-  },
-  "keywords": [],
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/alcb1310/tanstack-start/issues"
-  },
-  "homepage": "https://github.com/alcb1310/tanstack-start#readme",
-  "dependencies": {
-    "@tanstack/react-router": "^1.170.25",
-    "@tanstack/react-start": "^1.168.42",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8"
-  },
-  "devDependencies": {
-    "@types/node": "^26.2.0",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.0.5",
-    "typescript": "^7.0.2",
-    "vite": "^8.2.1"
-  }
+	"name": "tanstack-start",
+	"version": "1.0.0",
+	"description": "[![Checked with Biome](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev)",
+	"main": "index.js",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/alcb1310/tanstack-start.git"
+	},
+	"keywords": [],
+	"type": "module",
+	"bugs": {
+		"url": "https://github.com/alcb1310/tanstack-start/issues"
+	},
+	"homepage": "https://github.com/alcb1310/tanstack-start#readme",
+	"dependencies": {
+		"@tanstack/react-router": "^1.170.25",
+		"@tanstack/react-start": "^1.168.42",
+		"react": "^19.2.8",
+		"react-dom": "^19.2.8"
+	},
+	"devDependencies": {
+		"@types/node": "^26.2.0",
+		"@types/react": "^19.2.18",
+		"@types/react-dom": "^19.2.4",
+		"@vitejs/plugin-react": "^6.0.5",
+		"typescript": "^7.0.2",
+		"vite": "^8.2.1"
+	}
 }
