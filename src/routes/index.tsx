@@ -34,6 +34,17 @@ function RouteComponent() {
                             About
                         </Button>
                     </li>
+                    <li>
+                        <Button
+                            variant='ghost'
+                            onClick={() => {
+                                navigate({ to: "/contact" })
+                            }}
+                            size='xs'
+                        >
+                            Contact
+                        </Button>
+                    </li>
                 </ul>
             </nav>
             <p>Hello "/"!</p>
