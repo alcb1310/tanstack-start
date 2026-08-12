@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
+import { featureFlags } from "@/validation/env"
 
 export const Route = createFileRoute("/about")({
     component: RouteComponent,
@@ -15,9 +16,11 @@ function RouteComponent() {
                     <li>
                         <Link to='/about'>About</Link>
                     </li>
-                    <li>
-                        <Link to='/contact'>Contact</Link>
-                    </li>
+                    {featureFlags.contactFlag && (
+                        <li>
+                            <Link to='/contact'>Contact</Link>
+                        </li>
+                    )}
                 </ul>
             </nav>
             <p>Hello "/about"!</p>
