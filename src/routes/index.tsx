@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 
 export const Route = createFileRoute("/")({
@@ -6,8 +6,36 @@ export const Route = createFileRoute("/")({
 })
 
 function RouteComponent() {
+    const navigate = useNavigate()
+
     return (
         <div>
+            <nav>
+                <ul className='flex gap-1'>
+                    <li>
+                        <Button
+                            variant='ghost'
+                            onClick={() => {
+                                navigate({ to: "/" })
+                            }}
+                            size='xs'
+                        >
+                            Home
+                        </Button>
+                    </li>
+                    <li>
+                        <Button
+                            variant='ghost'
+                            onClick={() => {
+                                navigate({ to: "/about" })
+                            }}
+                            size='xs'
+                        >
+                            About
+                        </Button>
+                    </li>
+                </ul>
+            </nav>
             <p>Hello "/"!</p>
             <Button variant='default' size='xs'>
                 Shadcn/UI Sample Button
