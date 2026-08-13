@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { featureFlags } from "@/validation/env"
 
@@ -50,6 +50,9 @@ function RouteComponent() {
                     )}
                 </ul>
             </nav>
+            <div className='p-4'>
+                <Outlet />
+            </div>
         </div>
     )
 }
