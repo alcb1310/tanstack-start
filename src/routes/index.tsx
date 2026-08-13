@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
+import { featureFlags } from "@/validation/env"
 
 export const Route = createFileRoute("/")({
     component: RouteComponent,
@@ -34,6 +35,19 @@ function RouteComponent() {
                             About
                         </Button>
                     </li>
+                    {featureFlags.contactFlag && (
+                        <li>
+                            <Button
+                                variant='ghost'
+                                onClick={() => {
+                                    navigate({ to: "/contact" })
+                                }}
+                                size='xs'
+                            >
+                                Contact
+                            </Button>
+                        </li>
+                    )}
                 </ul>
             </nav>
             <p>Hello "/"!</p>
