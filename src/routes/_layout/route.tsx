@@ -1,8 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 import { featureFlags } from "@/validation/env"
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_layout")({
     component: RouteComponent,
 })
 
@@ -50,10 +50,9 @@ function RouteComponent() {
                     )}
                 </ul>
             </nav>
-            <p>Hello "/"!</p>
-            <Button variant='default' size='xs'>
-                Shadcn/UI Sample Button
-            </Button>
+            <div className='p-4'>
+                <Outlet />
+            </div>
         </div>
     )
 }

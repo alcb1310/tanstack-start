@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { featureFlags } from "@/validation/env"
 
-export const Route = createFileRoute("/contact")({
+export const Route = createFileRoute("/_layout/contact")({
     component: RouteComponent,
     beforeLoad: () => {
         if (!featureFlags.contactFlag) {
