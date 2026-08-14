@@ -14,6 +14,14 @@ export const Route = createFileRoute('/_layout/contact')({
 			)
 		}
 	},
+	errorComponent: ({ error }) => {
+		return (
+			<div>
+				<h2>Contact error</h2>
+				<pre className='text-destructive'>{error.message}</pre>
+			</div>
+		)
+	},
 })
 
 function RouteComponent() {
