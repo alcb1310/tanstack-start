@@ -1,4 +1,4 @@
-import { createRouter } from '@tanstack/react-router'
+import { createRouter, useRouterState } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
 export function getRouter() {
@@ -11,6 +11,16 @@ export function getRouter() {
 				<div>
 					<h2>Global Error</h2>
 					<pre className='text-destructive'>{error.message}</pre>
+				</div>
+			)
+		},
+		defaultNotFoundComponent: () => {
+			const router = useRouterState()
+
+			return (
+				<div>
+					<h2>Global Not Found</h2>
+					<p>The route {router.location.href} was not found</p>
 				</div>
 			)
 		},
