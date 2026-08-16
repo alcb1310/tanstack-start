@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutAboutRouteImport } from './routes/_layout/about'
 import { Route as LayoutContactRouteImport } from './routes/_layout/contact'
@@ -19,6 +20,11 @@ import { Route as LayoutUsersIdRouteImport } from './routes/_layout/users/$id'
 
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
@@ -54,6 +60,7 @@ const LayoutUsersIdRoute = LayoutUsersIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
+  '/login': typeof LoginRoute
   '/users': typeof LayoutUsersRouteRouteWithChildren
   '/about': typeof LayoutAboutRoute
   '/contact': typeof LayoutContactRoute
@@ -61,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/users/': typeof LayoutUsersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
   '/about': typeof LayoutAboutRoute
   '/contact': typeof LayoutContactRoute
   '/': typeof LayoutIndexRoute
@@ -70,6 +78,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/_layout/users': typeof LayoutUsersRouteRouteWithChildren
   '/_layout/about': typeof LayoutAboutRoute
   '/_layout/contact': typeof LayoutContactRoute
@@ -79,12 +88,14 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/users' | '/about' | '/contact' | '/users/$id' | '/users/'
+  fullPaths:
+    '/' | '/login' | '/users' | '/about' | '/contact' | '/users/$id' | '/users/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/contact' | '/' | '/users/$id' | '/users'
+  to: '/login' | '/about' | '/contact' | '/' | '/users/$id' | '/users'
   id:
     | '__root__'
     | '/_layout'
+    | '/login'
     | '/_layout/users'
     | '/_layout/about'
     | '/_layout/contact'
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -104,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof LayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_layout/': {
@@ -184,6 +203,7 @@ const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
