@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { ClientEnv } from '@/validation/env'
+import { getServerEnv } from '@/validation/env'
 
 type JokeQuery = {
 	icon_url: string
@@ -10,18 +11,21 @@ type JokeQuery = {
 	value: string
 }
 
-async function getJoke() {
-	console.log('getting the joke')
-	const query = await fetch(ClientEnv.VITE_JOKES_API, {
-		method: 'GET',
-	})
+const getJoke = createServerFn({ method: 'GET' }).handler(
+	async (): Promise<JokeQuery> => {
+		console.debug('DEBUG: joke')
+		const url = getServerEnv().JOKES_API
+		const query = await fetch(url, {
+			method: 'GET',
+		})
 
-	if (!query.ok) {
-		throw new Error('Error fetching new joke')
-	}
+		if (!query.ok) {
+			throw new Error('Error fetching new joke')
+		}
 
-	return { joke: (await query.json()) as JokeQuery }
-}
+		return (await query.json()) as JokeQuery
+	},
+)
 
 export const Route = createFileRoute('/_layout/jokes')({
 	component: RouteComponent,
@@ -32,7 +36,7 @@ export const Route = createFileRoute('/_layout/jokes')({
 
 function RouteComponent() {
 	const j = Route.useLoaderData()
-	const [joke, setJoke] = useState<JokeQuery>(j.joke)
+	const [joke, setJoke] = useState<JokeQuery>(j)
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState('')
 	const [hasError, setHasError] = useState(false)
@@ -43,7 +47,7 @@ function RouteComponent() {
 		setHasError(false)
 		try {
 			const j = await getJoke()
-			setJoke(j.joke)
+			setJoke(j)
 		} catch (e) {
 			setError(e.message)
 			setHasError(true)
