@@ -14,16 +14,9 @@ export function FormButton({
 
 	return (
 		<form.Subscribe selector={(state) => state.isSubmitting}>
-			{(isSubmitting) => (
-				<Button
-					type='submit'
-					variant='default'
-					disabled={isSubmitting}
-					{...props}
-				>
-					{label}
-				</Button>
-			)}
+			<Button type='submit' variant='default' {...props}>
+				{label}
+			</Button>
 		</form.Subscribe>
 	)
 }
