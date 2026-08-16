@@ -35,6 +35,17 @@ function RouteComponent() {
 							About
 						</Button>
 					</li>
+					<li>
+						<Button
+							variant='ghost'
+							onClick={() => {
+								navigate({ to: '/jokes' })
+							}}
+							size='xs'
+						>
+							Chuck Norris
+						</Button>
+					</li>
 					{featureFlags.contactFlag && (
 						<li>
 							<Button

@@ -1,22 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { type ChangeEvent, useState } from 'react'
-import { z, ZodError } from 'zod'
-import { Button } from '@/components/ui/button'
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
 import {
-	Field,
 	FieldDescription,
-	FieldError,
 	FieldGroup,
-	FieldLabel,
 	FieldLegend,
 	FieldSet,
 } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
 import { useAppForm } from '@/hooks/form-context'
-
-export const Route = createFileRoute('/login')({
-	component: RouteComponent,
-})
+import { useMutation } from '@tanstack/react-query'
 
 const loginSchema = z.object({
 	username: z
@@ -32,6 +24,23 @@ async function sleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+const handleLogin = createServerFn({ method: 'POST' })
+	.validator((data: Login) => data)
+	.handler(async ({ data }) => {
+		await sleep(2000)
+
+		const d = Math.floor(Math.random() * 100) + 1
+		if (d % 2 !== 0) {
+			throw new Error('Invalid credentials')
+		}
+
+		return { user: data.username }
+	})
+
+export const Route = createFileRoute('/login')({
+	component: RouteComponent,
+})
+
 function RouteComponent() {
 	const form = useAppForm({
 		defaultValues: {
@@ -39,12 +48,24 @@ function RouteComponent() {
 			password: '',
 		} as Login,
 		onSubmit: async ({ value }) => {
-			await sleep(2000)
-			console.log(value)
+			mutate.mutate({ data: value })
 		},
 		validators: {
 			onSubmit: loginSchema,
 			onChange: loginSchema,
+		},
+	})
+
+	const mutate = useMutation({
+		mutationFn: handleLogin,
+		onSuccess: (data) => {
+			alert(`Success: ${data.user}`)
+		},
+		onError: (error) => {
+			alert(`Error: ${error.message}`)
+		},
+		onSettled: () => {
+			alert('Query settled')
 		},
 	})
 
@@ -79,7 +100,7 @@ function RouteComponent() {
 						</form.AppField>
 
 						<form.AppForm>
-							<form.FormButton label='Login' />
+							<form.FormButton label='Login' disabled={mutate.isPending} />
 						</form.AppForm>
 					</FieldGroup>
 				</FieldSet>
