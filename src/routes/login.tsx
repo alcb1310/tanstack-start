@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { type ChangeEvent, useState } from 'react'
+import { z, ZodError } from 'zod'
 import { Button } from '@/components/ui/button'
 import {
 	Field,
@@ -11,56 +12,41 @@ import {
 	FieldSet,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { useAppForm } from '@/hooks/form-context'
 
 export const Route = createFileRoute('/login')({
 	component: RouteComponent,
 })
 
-type Login = {
-	username: string
-	password: string
+const loginSchema = z.object({
+	username: z
+		.string()
+		.min(5, { message: 'The username must be at least 5 characters long' }),
+	password: z
+		.string()
+		.min(5, { message: 'The password must be at least 5 characters long' }),
+})
+type Login = z.infer<typeof loginSchema>
+
+async function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function RouteComponent() {
-	const [credentials, setCredentials] = useState<Login>({
-		username: '',
-		password: '',
-	})
-	const [error, setError] = useState<Login>({
-		username: '',
-		password: '',
-	})
-
-	function handleChange(e: ChangeEvent<HTMLInputElement>) {
-		const { name, value } = e.target
-		setCredentials((prevdata) => ({ ...prevdata, [name]: value }))
-	}
-
-	function submitForm() {
-		setError({
+	const form = useAppForm({
+		defaultValues: {
 			username: '',
 			password: '',
-		})
-		let hasError: boolean = false
-		if (credentials.username.length < 5) {
-			setError((prevdata) => ({
-				...prevdata,
-				username: 'The username must be at least 5 characters long',
-			}))
-			hasError = true
-		}
-		if (credentials.password.length < 5) {
-			setError((prevdata) => ({
-				...prevdata,
-				password: 'The password must be at least 5 characters long',
-			}))
-			hasError = true
-		}
-
-		if (hasError) return
-
-		console.log(credentials)
-	}
+		} as Login,
+		onSubmit: async ({ value }) => {
+			await sleep(2000)
+			console.log(value)
+		},
+		validators: {
+			onSubmit: loginSchema,
+			onChange: loginSchema,
+		},
+	})
 
 	return (
 		<div className='w-1/2 mx-auto'>
@@ -68,7 +54,7 @@ function RouteComponent() {
 				onSubmit={(e) => {
 					e.preventDefault()
 					e.stopPropagation()
-					submitForm()
+					form.handleSubmit()
 				}}
 			>
 				<FieldSet>
@@ -77,38 +63,24 @@ function RouteComponent() {
 						Enter your username and password to login
 					</FieldDescription>
 					<FieldGroup>
-						<Field>
-							<FieldLabel htmlFor='username'>Username</FieldLabel>
-							<Input
-								name='username'
-								autoComplete='off'
-								placeholder='username'
-								value={credentials.username}
-								onChange={handleChange}
-							/>
-							{error.username && (
-								<FieldError>Error: {error.username}</FieldError>
+						<form.AppField name='username'>
+							{(field) => (
+								<field.FormTextField label='username' placeholder='Username' />
 							)}
-						</Field>
-						<Field>
-							<FieldLabel htmlFor='password'>Password</FieldLabel>
-							<Input
-								name='password'
-								autoComplete='off'
-								type='password'
-								placeholder='********'
-								value={credentials.password}
-								onChange={handleChange}
-							/>
-							{error.password && (
-								<FieldError>Error: {error.password}</FieldError>
+						</form.AppField>
+						<form.AppField name='password'>
+							{(field) => (
+								<field.FormTextField
+									label='password'
+									placeholder='******'
+									type='password'
+								/>
 							)}
-						</Field>
-						<Field>
-							<Button type='submit' variant='default'>
-								Login
-							</Button>
-						</Field>
+						</form.AppField>
+
+						<form.AppForm>
+							<form.FormButton label='Login' />
+						</form.AppForm>
 					</FieldGroup>
 				</FieldSet>
 			</form>
