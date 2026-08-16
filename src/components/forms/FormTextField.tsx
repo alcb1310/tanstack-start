@@ -1,9 +1,10 @@
 import { useSelector } from '@tanstack/react-form'
+import type { ComponentProps } from 'react'
 import { useFieldContext } from '@/hooks/form-context'
 import { Field, FieldError, FieldLabel } from '../ui/field'
 import { Input } from '../ui/input'
 
-type FormTextFieldProps = {
+interface FormTextFieldProps extends ComponentProps<'input'> {
 	label: string
 	placeholder: string
 }
@@ -11,6 +12,7 @@ type FormTextFieldProps = {
 export function FormTextField({
 	label,
 	placeholder,
+	...props
 }: Readonly<FormTextFieldProps>) {
 	const field = useFieldContext()
 	const errors = useSelector(field.store, (state) => state.meta.errors)
@@ -25,10 +27,11 @@ export function FormTextField({
 				value={field.state.value}
 				onChange={(e) => field.handleChange(e.target.value)}
 				onBlur={field.handleBlur}
+				{...props}
 			/>
-			{errors.map((error: string) => {
-				return <FieldError key={error}>Error: {error}</FieldError>
-			})}
+			{field.state.meta.isTouched && !field.state.meta.isValid && (
+				<FieldError>{errors[0].message}</FieldError>
+			)}
 		</Field>
 	)
 }
