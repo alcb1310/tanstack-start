@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/field'
 import { useAppForm } from '@/hooks/form-context'
 import { useMutation } from '@tanstack/react-query'
+import { getConnection } from '@/database/connect'
 
 const loginSchema = z.object({
 	username: z
@@ -28,6 +29,7 @@ const handleLogin = createServerFn({ method: 'POST' })
 	.validator((data: Login) => data)
 	.handler(async ({ data }) => {
 		await sleep(2000)
+		await getConnection()
 
 		const d = Math.floor(Math.random() * 100) + 1
 		if (d % 2 !== 0) {
