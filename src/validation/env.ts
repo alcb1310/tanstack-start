@@ -8,6 +8,11 @@ export const ClientEnv = clientEnvSchema.parse(import.meta.env)
 
 const serverEnvSchema = z.object({
 	JOKES_API: z.url(),
+	DB_USER: z.string(),
+	DB_PASSWORD: z.string(),
+	DB_HOST: z.string(),
+	DB_PORT: z.string(),
+	DB_NAME: z.string(),
 })
 
 export function getServerEnv() {
