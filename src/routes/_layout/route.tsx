@@ -39,6 +39,17 @@ function RouteComponent() {
 						<Button
 							variant='ghost'
 							onClick={() => {
+								navigate({ to: '/users' })
+							}}
+							size='xs'
+						>
+							Users
+						</Button>
+					</li>
+					<li>
+						<Button
+							variant='ghost'
+							onClick={() => {
 								navigate({ to: '/jokes' })
 							}}
 							size='xs'

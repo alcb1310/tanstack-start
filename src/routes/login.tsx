@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
@@ -7,8 +8,8 @@ import {
 	FieldLegend,
 	FieldSet,
 } from '@/components/ui/field'
+import { getConnection } from '@/database/connect'
 import { useAppForm } from '@/hooks/form-context'
-import { useMutation } from '@tanstack/react-query'
 
 const loginSchema = z.object({
 	username: z
@@ -28,6 +29,7 @@ const handleLogin = createServerFn({ method: 'POST' })
 	.validator((data: Login) => data)
 	.handler(async ({ data }) => {
 		await sleep(2000)
+		await getConnection()
 
 		const d = Math.floor(Math.random() * 100) + 1
 		if (d % 2 !== 0) {
