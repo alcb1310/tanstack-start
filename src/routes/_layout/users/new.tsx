@@ -1,4 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { useMutation } from '@tanstack/react-query'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import z from 'zod'
 import {
 	FieldDescription,
@@ -6,6 +8,7 @@ import {
 	FieldLegend,
 	FieldSet,
 } from '@/components/ui/field'
+import { getConnection } from '@/database/connect'
 import { useAppForm } from '@/hooks/form-context'
 
 const newUserSchema = z.object({
@@ -19,11 +22,30 @@ const newUserSchema = z.object({
 
 type NewUserType = z.infer<typeof newUserSchema>
 
+const saveUser = createServerFn({ method: 'POST' })
+	.validator((data: NewUserType) => data)
+	.handler(async ({ data }) => {
+		try {
+			const query = 'INSERT INTO users (username, password) values ($1, $2)'
+			const values = [data.username, data.password]
+			const pool = await getConnection()
+
+			const result = await pool.query(query, values)
+			console.log('Result: ', result)
+		} catch (e) {
+			console.error(`Error inserting user: ${e}`)
+			throw e
+		}
+	})
+
 export const Route = createFileRoute('/_layout/users/new')({
 	component: RouteComponent,
 })
 
 function RouteComponent() {
+	const { queryClient } = Route.useRouteContext()
+	const navigate = useNavigate()
+
 	const form = useAppForm({
 		defaultValues: {
 			username: '',
@@ -33,7 +55,21 @@ function RouteComponent() {
 			onSubmit: newUserSchema,
 		},
 		onSubmit: ({ value }) => {
-			console.log(value)
+			mutate.mutate({ data: value })
+		},
+	})
+
+	const mutate = useMutation({
+		mutationFn: saveUser,
+		onSuccess: () => {
+			alert('success')
+			queryClient.invalidateQueries({
+				queryKey: ['users'],
+			})
+			navigate({ to: '/users' })
+		},
+		onError: ({ message }) => {
+			alert(message)
 		},
 	})
 
