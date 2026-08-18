@@ -9,8 +9,9 @@ import {
 	FieldSet,
 } from '@/components/ui/field'
 import { db } from '@/database/connect'
+import { usersTable } from '@/database/schema'
 import { useAppForm } from '@/hooks/form-context'
-import { usersTable } from '@/database/schema';
+import { hashPassword } from '@/lib/password'
 
 const newUserSchema = z.object({
 	username: z
@@ -27,14 +28,15 @@ const saveUser = createServerFn({ method: 'POST' })
 	.validator((data: NewUserType) => data)
 	.handler(async ({ data }) => {
 		try {
+			const password = await hashPassword(data.password)
 			// const query = 'INSERT INTO users (username, password) values ($1, $2)'
-			// const values = [data.username, data.password]
+			// const values = [data.username, password]
 			// const pool = getConnection()
 			//
 			// const result = await pool.query(query, values)
 			const result = await db.insert(usersTable).values({
 				username: data.username,
-				password: data.password
+				password,
 			})
 			console.log('Result: ', result)
 		} catch (e) {
