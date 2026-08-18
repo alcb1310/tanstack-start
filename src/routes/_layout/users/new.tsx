@@ -8,8 +8,9 @@ import {
 	FieldLegend,
 	FieldSet,
 } from '@/components/ui/field'
-import { getConnection } from '@/database/connect'
+import { db } from '@/database/connect'
 import { useAppForm } from '@/hooks/form-context'
+import { usersTable } from '@/database/schema';
 
 const newUserSchema = z.object({
 	username: z
@@ -26,11 +27,15 @@ const saveUser = createServerFn({ method: 'POST' })
 	.validator((data: NewUserType) => data)
 	.handler(async ({ data }) => {
 		try {
-			const query = 'INSERT INTO users (username, password) values ($1, $2)'
-			const values = [data.username, data.password]
-			const pool = await getConnection()
-
-			const result = await pool.query(query, values)
+			// const query = 'INSERT INTO users (username, password) values ($1, $2)'
+			// const values = [data.username, data.password]
+			// const pool = getConnection()
+			//
+			// const result = await pool.query(query, values)
+			const result = await db.insert(usersTable).values({
+				username: data.username,
+				password: data.password
+			})
 			console.log('Result: ', result)
 		} catch (e) {
 			console.error(`Error inserting user: ${e}`)
