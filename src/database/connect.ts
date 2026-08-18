@@ -1,7 +1,8 @@
+import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import { getServerEnv } from '@/validation/env'
 
-export async function getConnection() {
+export function getConnection() {
 	const envVar = getServerEnv()
 
 	// Create a connection pool
@@ -13,15 +14,7 @@ export async function getConnection() {
 		port: Number(envVar.DB_PORT),
 	})
 
-	// verify connection
-	try {
-		const client = await pool.connect()
-		console.log('✅ Connected to PostgreSQL database')
-		client.release()
-	} catch (error) {
-		console.error(`❌ Error connecting to the database: ${error}`)
-		throw new Error(`❌ Error connecting to the database: ${error}`)
-	}
-
 	return pool
 }
+
+export const db = drizzle({ client: getConnection() })
