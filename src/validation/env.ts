@@ -13,6 +13,7 @@ const serverEnvSchema = z.object({
 	DB_HOST: z.string(),
 	DB_PORT: z.string(),
 	DB_NAME: z.string(),
+	SALT: z.string(),
 })
 
 export function getServerEnv() {
