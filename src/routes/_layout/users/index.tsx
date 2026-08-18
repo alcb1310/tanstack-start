@@ -3,7 +3,8 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import { getConnection } from '@/database/connect'
+import { db } from '@/database/connect'
+import { usersTable } from '@/database/schema'
 
 const usersSchema = z.object({
 	id: z.number(),
@@ -14,11 +15,18 @@ type UserType = z.infer<typeof usersSchema>
 
 const getAllUsers = createServerFn({ method: 'GET' }).handler(
 	async (): Promise<UserType[]> => {
-		const conn = await getConnection()
-
-		const rows = conn.query('select id, username from users')
-
-		return (await rows).rows as UserType[]
+		// const conn = getConnection()
+		//
+		// const rows = conn.query('select id, username from users')
+		//
+		// return (await rows).rows as UserType[]
+		const users = await db
+			.select({
+				id: usersTable.id,
+				username: usersTable.username,
+			})
+			.from(usersTable)
+		return users
 	},
 )
 
