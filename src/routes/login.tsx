@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { setCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
@@ -64,6 +64,7 @@ export const Route = createFileRoute('/login')({
 })
 
 function RouteComponent() {
+	const navigate = useNavigate()
 	const form = useAppForm({
 		defaultValues: {
 			username: '',
@@ -80,14 +81,11 @@ function RouteComponent() {
 
 	const mutate = useMutation({
 		mutationFn: handleLogin,
-		onSuccess: (data) => {
-			alert(`Success: ${data.user.username}`)
+		onSuccess: () => {
+			navigate({ to: '/dashboard' })
 		},
 		onError: (error) => {
 			alert(`Error: ${error.message}`)
-		},
-		onSettled: () => {
-			alert('Query settled')
 		},
 	})
 
