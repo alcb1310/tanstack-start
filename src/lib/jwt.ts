@@ -1,3 +1,4 @@
+import { createServerFn } from '@tanstack/react-start'
 import pkg from 'jsonwebtoken'
 import { getServerEnv } from '@/validation/env'
 
@@ -20,13 +21,16 @@ export function createJWT(payload: PayloadType) {
 	return jwtResult
 }
 
-export function verifyJWT(token: string) {
-	const secret = getServerEnv().JWT_SECRET
+export const verifyJWT = createServerFn({ method: 'GET' })
+	.validator((data: string) => data)
+	.handler(({ data }) => {
+		// export function verifyJWT(token: string) {
+		const secret = getServerEnv().JWT_SECRET
 
-	try {
-		const decoded = verify(token, secret)
-		console.log(decoded)
-	} catch {
-		throw new Error('Invalid token')
-	}
-}
+		try {
+			const decoded = verify(data, secret)
+			return decoded
+		} catch {
+			throw new Error('Invalid token')
+		}
+	})

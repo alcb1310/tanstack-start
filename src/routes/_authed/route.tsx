@@ -1,16 +1,38 @@
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
+import {
+	createFileRoute,
+	Outlet,
+	redirect,
+	useNavigate,
+} from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { deleteCookie } from '@tanstack/react-start/server'
+import { deleteCookie, getCookie } from '@tanstack/react-start/server'
 import { Button } from '@/components/ui/button'
+import { verifyJWT } from '@/lib/jwt'
 
 const logout = createServerFn({ method: 'POST' }).handler(async () => {
 	deleteCookie('CHINGU')
 })
 
+const readCookieFn = createServerFn({ method: 'GET' }).handler(async () => {
+	const cookieValue = getCookie('CHINGU')
+	console.log(cookieValue)
+
+	if (!cookieValue) {
+		return { cookieValue: null }
+	}
+	return { cookieValue }
+})
+
 export const Route = createFileRoute('/_authed')({
 	component: RouteComponent,
-	errorComponent: () => {
-		return <h2>Authed error component</h2>
+	loader: async () => {
+		const token = await readCookieFn()
+		if (!token.cookieValue) {
+			throw redirect({ to: '/login' })
+		}
+		const tokenData = await verifyJWT({ data: token.cookieValue })
+
+		return { cookieValue: tokenData }
 	},
 })
 
