@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthedRouteRouteImport } from './routes/_authed/route'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthedDashboardRouteImport } from './routes/_authed/dashboard'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutAboutRouteImport } from './routes/_layout/about'
 import { Route as LayoutContactRouteImport } from './routes/_layout/contact'
@@ -20,6 +22,10 @@ import { Route as LayoutUsersIndexRouteImport } from './routes/_layout/users/ind
 import { Route as LayoutUsersIdRouteImport } from './routes/_layout/users/$id'
 import { Route as LayoutUsersNewRouteImport } from './routes/_layout/users/new'
 
+const AuthedRouteRoute = AuthedRouteRouteImport.update({
+  id: '/_authed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
   getParentRoute: () => rootRouteImport,
@@ -28,6 +34,11 @@ const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedDashboardRoute = AuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthedRouteRoute,
 } as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
@@ -74,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/login': typeof LoginRoute
   '/users': typeof LayoutUsersRouteRouteWithChildren
+  '/dashboard': typeof AuthedDashboardRoute
   '/about': typeof LayoutAboutRoute
   '/contact': typeof LayoutContactRoute
   '/jokes': typeof LayoutJokesRoute
@@ -82,20 +94,23 @@ export interface FileRoutesByFullPath {
   '/users/': typeof LayoutUsersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof LayoutIndexRoute
   '/login': typeof LoginRoute
+  '/dashboard': typeof AuthedDashboardRoute
   '/about': typeof LayoutAboutRoute
   '/contact': typeof LayoutContactRoute
   '/jokes': typeof LayoutJokesRoute
-  '/': typeof LayoutIndexRoute
   '/users/$id': typeof LayoutUsersIdRoute
   '/users/new': typeof LayoutUsersNewRoute
   '/users': typeof LayoutUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_authed': typeof AuthedRouteRouteWithChildren
   '/_layout': typeof LayoutRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_layout/users': typeof LayoutUsersRouteRouteWithChildren
+  '/_authed/dashboard': typeof AuthedDashboardRoute
   '/_layout/about': typeof LayoutAboutRoute
   '/_layout/contact': typeof LayoutContactRoute
   '/_layout/jokes': typeof LayoutJokesRoute
@@ -110,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/users'
+    | '/dashboard'
     | '/about'
     | '/contact'
     | '/jokes'
@@ -118,19 +134,22 @@ export interface FileRouteTypes {
     | '/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/login'
+    | '/dashboard'
     | '/about'
     | '/contact'
     | '/jokes'
-    | '/'
     | '/users/$id'
     | '/users/new'
     | '/users'
   id:
     | '__root__'
+    | '/_authed'
     | '/_layout'
     | '/login'
     | '/_layout/users'
+    | '/_authed/dashboard'
     | '/_layout/about'
     | '/_layout/contact'
     | '/_layout/jokes'
@@ -141,12 +160,20 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthedRouteRoute: typeof AuthedRouteRouteWithChildren
   LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_authed': {
+      id: '/_authed'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout': {
       id: '/_layout'
       path: ''
@@ -160,6 +187,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/dashboard': {
+      id: '/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthedDashboardRouteImport
+      parentRoute: typeof AuthedRouteRoute
     }
     '/_layout/': {
       id: '/_layout/'
@@ -220,6 +254,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthedRouteRouteChildren {
+  AuthedDashboardRoute: typeof AuthedDashboardRoute
+}
+
+const AuthedRouteRouteChildren: AuthedRouteRouteChildren = {
+  AuthedDashboardRoute: AuthedDashboardRoute,
+}
+
+const AuthedRouteRouteWithChildren = AuthedRouteRoute._addFileChildren(
+  AuthedRouteRouteChildren,
+)
+
 interface LayoutUsersRouteRouteChildren {
   LayoutUsersIdRoute: typeof LayoutUsersIdRoute
   LayoutUsersNewRoute: typeof LayoutUsersNewRoute
@@ -256,6 +302,7 @@ const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  AuthedRouteRoute: AuthedRouteRouteWithChildren,
   LayoutRouteRoute: LayoutRouteRouteWithChildren,
   LoginRoute: LoginRoute,
 }

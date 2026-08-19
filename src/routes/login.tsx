@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { setCookie } from '@tanstack/react-start/server'
 import { z } from 'zod'
 import {
 	FieldDescription,
@@ -10,6 +11,8 @@ import {
 } from '@/components/ui/field'
 import { getConnection } from '@/database/connect'
 import { useAppForm } from '@/hooks/form-context'
+import { createJWT } from '@/lib/jwt'
+import { comparePassword } from '@/lib/password'
 
 const loginSchema = z.object({
 	username: z
@@ -21,22 +24,39 @@ const loginSchema = z.object({
 })
 type Login = z.infer<typeof loginSchema>
 
-async function sleep(ms: number): Promise<void> {
-	return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 const handleLogin = createServerFn({ method: 'POST' })
 	.validator((data: Login) => data)
 	.handler(async ({ data }) => {
-		await sleep(2000)
-		await getConnection()
+		try {
+			const pool = getConnection()
+			const query =
+				'SELECT id, username, password FROM users WHERE username=$1 LIMIT 1'
+			const rows = await pool.query(query, [data.username])
+			if (rows.rowCount === 0) {
+				throw new Error('Invalid credentials')
+			}
+			const user = rows.rows[0]
 
-		const d = Math.floor(Math.random() * 100) + 1
-		if (d % 2 !== 0) {
+			const ok = await comparePassword(data.password, user.password)
+			if (!ok) {
+				throw new Error('Invalid credentials')
+			}
+
+			const token = createJWT({
+				id: user.id,
+				username: user.username,
+			})
+
+			setCookie('CHINGU', token, { httpOnly: true })
+			return {
+				user: {
+					id: user.id,
+					username: user.username,
+				},
+			}
+		} catch {
 			throw new Error('Invalid credentials')
 		}
-
-		return { user: data.username }
 	})
 
 export const Route = createFileRoute('/login')({
@@ -44,6 +64,7 @@ export const Route = createFileRoute('/login')({
 })
 
 function RouteComponent() {
+	const navigate = useNavigate()
 	const form = useAppForm({
 		defaultValues: {
 			username: '',
@@ -60,14 +81,11 @@ function RouteComponent() {
 
 	const mutate = useMutation({
 		mutationFn: handleLogin,
-		onSuccess: (data) => {
-			alert(`Success: ${data.user}`)
+		onSuccess: () => {
+			navigate({ to: '/dashboard' })
 		},
 		onError: (error) => {
 			alert(`Error: ${error.message}`)
-		},
-		onSettled: () => {
-			alert('Query settled')
 		},
 	})
 
