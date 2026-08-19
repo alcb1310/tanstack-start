@@ -1,5 +1,11 @@
 import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
+import { deleteCookie } from '@tanstack/react-start/server'
 import { Button } from '@/components/ui/button'
+
+const logout = createServerFn({ method: 'POST' }).handler(async () => {
+	deleteCookie('CHINGU')
+})
 
 export const Route = createFileRoute('/_authed')({
 	component: RouteComponent,
@@ -31,6 +37,7 @@ function RouteComponent() {
 					variant='ghost'
 					size='xs'
 					onClick={async () => {
+						await logout()
 						navigate({ to: '/login' })
 					}}
 				>
