@@ -5,11 +5,15 @@ import {
 	Scripts,
 } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
+import type { UserContext } from '@/types/userContext'
 import appCss from '../styles.css?url'
 
-export const Route = createRootRouteWithContext<{
+interface RouterContext {
 	queryClient: QueryClient
-}>()({
+	userContext: UserContext
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
 	head: () => ({
 		meta: [
 			{ charSet: 'utf-8' },
