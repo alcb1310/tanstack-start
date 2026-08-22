@@ -11,5 +11,16 @@ export default defineConfig({
 	resolve: {
 		tsconfigPaths: true,
 	},
-	plugins: [tanstackStart(), viteReact(), nitro(), tailwindcss()],
+	plugins: [
+		tanstackStart({
+			importProtection: {
+				client: {
+					specifiers: ['jsonwebtoken'],
+				},
+			},
+		}),
+		viteReact(),
+		nitro(),
+		tailwindcss(),
+	],
 })
