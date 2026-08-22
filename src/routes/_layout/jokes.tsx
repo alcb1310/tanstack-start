@@ -28,7 +28,7 @@ const getJoke = createServerFn({ method: 'GET' }).handler(
 
 export const Route = createFileRoute('/_layout/jokes')({
 	component: RouteComponent,
-	loader: async ({ context: { queryClient } }) => {
+	beforeLoad: async ({ context: { queryClient } }) => {
 		queryClient.prefetchQuery({
 			queryKey: ['jokes'],
 			queryFn: () => getJoke(),
