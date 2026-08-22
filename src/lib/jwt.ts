@@ -1,3 +1,4 @@
+import { redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import jwt from 'jsonwebtoken'
 import { getServerEnv } from '@/validation/env'
@@ -8,8 +9,8 @@ type PayloadType = {
 	groups: string[]
 }
 
-type PayloadResponse = {
-	id: number,
+export type PayloadResponse = {
+	id: number
 	name: string
 	groups: string[]
 }
@@ -31,13 +32,24 @@ export const createJWT = createServerFn()
 
 export const verifyJWT = createServerFn()
 	.validator((data: string) => data)
-	.handler(({ data }) => {
+	.handler(async ({ data }) => {
 		const secret = getServerEnv().JWT_SECRET
 
 		try {
 			const decoded = jwt.verify(data, secret)
 			return decoded as PayloadResponse
-		} catch {
-			throw new Error('Invalid token')
+		} catch (e) {
+			if (e instanceof jwt.TokenExpiredError) {
+				const decoded = jwt.decode(data) as PayloadResponse
+				await createJWT({
+					data: {
+						id: decoded.id,
+						username: decoded.name,
+						groups: decoded.groups,
+					},
+				})
+				return decoded
+			}
+			throw redirect({ to: '/login' })
 		}
 	})
