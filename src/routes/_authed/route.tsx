@@ -15,7 +15,6 @@ const logout = createServerFn({ method: 'POST' }).handler(async () => {
 
 const readCookieFn = createServerFn({ method: 'GET' }).handler(async () => {
 	const cookieValue = getCookie('CHINGU')
-	console.log(cookieValue)
 
 	if (!cookieValue) {
 		return { cookieValue: null }
@@ -25,13 +24,13 @@ const readCookieFn = createServerFn({ method: 'GET' }).handler(async () => {
 
 export const Route = createFileRoute('/_authed')({
 	component: RouteComponent,
-	loader: async () => {
+	beforeLoad: async () => {
 		const token = await readCookieFn()
 		if (!token.cookieValue) {
 			throw redirect({ to: '/login' })
 		}
-		const tokenData = await verifyJWT({ data: token.cookieValue })
 
+		const tokenData = await verifyJWT({ data: token.cookieValue })
 		return { cookieValue: tokenData }
 	},
 })
