@@ -1,5 +1,6 @@
 import { redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { setCookie } from '@tanstack/react-start/server'
 import jwt from 'jsonwebtoken'
 import { getServerEnv } from '@/validation/env'
 
@@ -23,10 +24,11 @@ export const createJWT = createServerFn()
 		const JWTPayload = {
 			sub: data.id, // Subject (user identifier)
 			name: data.username, // Additional claims
-			groups: data.groups
+			groups: data.groups,
 		}
 
 		const jwtResult = jwt.sign(JWTPayload, secret, { expiresIn: '1h' })
+		setCookie('CHINGU', jwtResult, { httpOnly: true })
 		return jwtResult
 	})
 

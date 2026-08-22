@@ -42,21 +42,15 @@ const handleLogin = createServerFn({ method: 'POST' })
 				throw new Error('Invalid credentials')
 			}
 
-
-			const token = await createJWT({
-				data: {
-					id: user.id,
-					username: user.username,
-				},
-			})
-
-			setCookie('CHINGU', token, { httpOnly: true })
-			return {
-				user: {
-					id: user.id,
-					username: user.username,
-				},
 			}
+			const info = {
+				id: user.id,
+				username: user.username,
+			}
+
+			await createJWT({ data: info })
+
+			return { user: info }
 		} catch {
 			throw new Error('Invalid credentials')
 		}
