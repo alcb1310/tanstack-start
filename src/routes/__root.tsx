@@ -5,12 +5,10 @@ import {
 	Scripts,
 } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import type { UserContext } from '@/types/userContext'
 import appCss from '../styles.css?url'
 
 interface RouterContext {
 	queryClient: QueryClient
-	userContext: UserContext
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
