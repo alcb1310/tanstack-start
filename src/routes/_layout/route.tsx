@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
+import {
+	createFileRoute,
+	Link,
+	Outlet,
+	useNavigate,
+} from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { featureFlags } from '@/validation/env'
 
@@ -47,6 +52,7 @@ function RouteComponent() {
 						</Button>
 					</li>
 					<li>
+						<Link to='/jokes'>Chuck Norris</Link>
 						<Button
 							variant='ghost'
 							onClick={() => {
