@@ -16,6 +16,14 @@ With this project we will be creating a new [Tanstack Start](https://tanstack.co
 - [ ] Add a dynamic route
 - [ ] Add default `Error Page`
 - [ ] Add default `Not Found Page`
+- [ ] Manage Forms
+- [ ] Manage asynchronous data
+- [ ] Database connection
+- [ ] ORM
+- [ ] Auth
+    - [ ] Authentication
+    - [ ] Authorization
+- [ ] Testing
 
 ## Stack
 

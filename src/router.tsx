@@ -2,15 +2,20 @@ import { QueryClient } from '@tanstack/react-query'
 import { createRouter, useRouterState } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
 import { routeTree } from './routeTree.gen'
+import type { UserContext } from './types/userContext'
 
 export function getRouter() {
 	const queryClient = new QueryClient()
+	const userContext: UserContext = {
+		username: '',
+		groups: [],
+	}
 
 	const router = createRouter({
 		routeTree,
 		scrollRestoration: true,
 		defaultPreload: 'intent',
-		context: { queryClient },
+		context: { queryClient, userContext },
 		defaultErrorComponent: ({ error }) => {
 			return (
 				<div>

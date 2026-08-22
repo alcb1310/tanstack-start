@@ -1,35 +1,42 @@
 import { createServerFn } from '@tanstack/react-start'
-import pkg from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { getServerEnv } from '@/validation/env'
-
-const { sign, verify } = pkg
 
 type PayloadType = {
 	id: number
 	username: string
+	groups: string[]
 }
 
-export function createJWT(payload: PayloadType) {
-	const secret = getServerEnv().JWT_SECRET
-
-	const JWTPayload = {
-		sub: payload.id, // Subject (user identifier)
-		name: payload.username, // Additional claims
-	}
-
-	const jwtResult = sign(JWTPayload, secret, { expiresIn: '1h' })
-	return jwtResult
+type PayloadResponse = {
+	id: number,
+	name: string
+	groups: string[]
 }
 
-export const verifyJWT = createServerFn({ method: 'GET' })
+export const createJWT = createServerFn()
+	.validator((data: PayloadType) => data)
+	.handler(({ data }) => {
+		const secret = getServerEnv().JWT_SECRET
+
+		const JWTPayload = {
+			sub: data.id, // Subject (user identifier)
+			name: data.username, // Additional claims
+			groups: data.groups
+		}
+
+		const jwtResult = jwt.sign(JWTPayload, secret, { expiresIn: '1h' })
+		return jwtResult
+	})
+
+export const verifyJWT = createServerFn()
 	.validator((data: string) => data)
 	.handler(({ data }) => {
-		// export function verifyJWT(token: string) {
 		const secret = getServerEnv().JWT_SECRET
 
 		try {
-			const decoded = verify(data, secret)
-			return decoded
+			const decoded = jwt.verify(data, secret)
+			return decoded as PayloadResponse
 		} catch {
 			throw new Error('Invalid token')
 		}
