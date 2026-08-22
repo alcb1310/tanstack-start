@@ -1,3 +1,4 @@
+import { createServerOnlyFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
 const clientEnvSchema = z.object({
@@ -17,9 +18,9 @@ const serverEnvSchema = z.object({
 	JWT_SECRET: z.string(),
 })
 
-export function getServerEnv() {
-	return serverEnvSchema.parse(process.env)
-}
+export const getServerEnv = createServerOnlyFn(() =>
+	serverEnvSchema.parse(process.env),
+)
 
 export const featureFlags = {
 	contactFlag: ClientEnv.VITE_CONTACT_FLAG === 'true',
